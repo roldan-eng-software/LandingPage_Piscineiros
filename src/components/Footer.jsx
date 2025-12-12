@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-gray-800 text-white">
       <div className="relative">
         <img 
-          src="https://via.placeholder.com/1200x400?text=Piscina+Limpa" 
+          src="https://picsum.photos/1200/400?random=1"
           alt="Piscina Limpa" 
           className="w-full h-48 md:h-64 object-cover opacity-30"
         />
