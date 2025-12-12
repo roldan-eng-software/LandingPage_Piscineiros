@@ -1,0 +1,227 @@
+CRIE UMA LANDING PAGE COMPLETA para pesquisa de piscineiros usando EXATAMENTE esta stack:
+
+## STACK OBRIGATÓRIA
+- React 18 + Vite 
+- Tailwind CSS (configurado com init)
+- React Hook Form para formulários
+- Totalmente responsivo mobile-first
+- Preparada para GitHub Pages deploy
+
+## ESTRUTURA DOS ARQUIVOS (CRIE TODOS):
+1. src/App.jsx - Componente principal com GA4
+2. src/components/Hero.jsx
+3. src/components/Beneficios.jsx  
+4. src/components/Formulario.jsx
+5. src/components/Footer.jsx
+6. src/components/Confirmacao.jsx - Mensagem pós-submit
+7. src/utils/analytics.js - Google Analytics 4
+8. tailwind.config.js - Cores: azul-piscina (#1E40AF, #3B82F6), verde-limpo (#10B981)
+9. index.html - Otimizado GitHub Pages com GA4 script
+10. package.json - Com scripts deploy
+11. vite.config.js - Sem base path (adicionar depois se precisar domínio customizado)
+12. README.md - Instruções deploy e variáveis ambiente
+
+## CONTEÚDO ESPECÍFICO:
+
+### Hero Section:
+- Título: "Pesquisa Piscineiros - Ajude a criar seu app ideal!"
+- Subtítulo: "5 minutos para contar sua rotina. Em breve te avisamos do lançamento!"
+- CTA Principal: Botão "Responder Agora" com scroll smooth para formulário (anchor link #formulario)
+- Fundo: Cor azul-piscina com gradiente sutil
+
+### Benefícios (3 cards com ícones):
+Card 1: "Organize rotas e agendamentos"
+Card 2: "Controle clientes e pagamentos" 
+Card 3: "Menos tempo com papelada"
+
+### FORMULÁRIO com REACT HOOK FORM - PERGUNTAS EXATAS:
+
+1. "Como é um dia típico seu?" (Múltipla escolha - obrigatória)
+   [ ] Acordo cedo, vejo WhatsApp, saio direto
+   [ ] Organizo agenda no papel/celular antes de sair
+   [ ] Visito 5-15 piscinas/dia
+   [ ] Descreva resumidamente sua rotina (campo texto livre)
+
+2. "Qual seu maior desafio atual?" (Texto livre - obrigatório)
+   - Campo textarea com max 500 caracteres
+
+3. "Quanto tempo gasta com administração/semana?" (Múltipla escolha - obrigatória)
+   [ ] 0-5 horas
+   [ ] 5-10 horas
+   [ ] 10+ horas
+
+4. "Como gerencia agendamentos HOJE?" (Múltipla escolha - obrigatória)
+   [ ] WhatsApp
+   [ ] Papel/Caderno
+   [ ] Google Calendar
+   [ ] Outro (especifique)
+   [ ] Nenhum sistema
+
+5. "Nome ou apelido" (Texto - obrigatório)
+
+6. "WhatsApp para contato (opcional)" (Telefone - opcional)
+   - Validação de formato: (XX) XXXXX-XXXX
+
+## FLUXO DO FORMULÁRIO:
+- Validação em tempo real com React Hook Form
+- Mensagens de erro claras em vermelho
+- Spinner/loading ao enviar
+- Após sucesso: mostrar componente Confirmacao.jsx com:
+  * Mensagem: "✓ Obrigado! Sua resposta foi registrada com sucesso!"
+  * Subtítulo: "Entraremos em contato em breve para dar as novidades"
+  * Tempo de exibição: 5 segundos antes de voltar ao form limpo
+  * Cor: verde-limpo (#10B981)
+
+## INTEGRAÇÃO DE DADOS:
+- Usar Formspree.io (GRÁTIS):
+  * Criar conta: https://formspree.io
+  * Gerar endpoint: https://formspree.io/f/SEU_ID
+  * Dados enviados direto para seu email
+  * Inclua documentação no README.md com passo a passo
+  
+ALTERNATIVA: Se quiser planilha Google Sheets:
+  * Usar Google Apps Script (mais complexo)
+  * Comentar no código como integrar depois
+
+## ANALYTICS - GOOGLE ANALYTICS 4:
+No arquivo src/utils/analytics.js:
+```
+export const initGA = () => {
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GA_MEASUREMENT_ID');
+};
+
+export const trackEvent = (eventName, eventParams) => {
+  window.gtag('event', eventName, eventParams);
+};
+```
+
+No index.html adicione script GA4 (substituir GA_MEASUREMENT_ID):
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+
+Rastrear eventos:
+- "hero_cta_click" - Clique no botão "Responder Agora"
+- "form_submit_success" - Formulário enviado com sucesso
+- "form_submit_error" - Erro ao enviar
+- "page_view" - Automático
+
+## DOCUMENTAÇÃO NO README.md:
+### Para configurar Formspree:
+1. Acesse https://formspree.io
+2. Crie conta gratuita
+3. Crie novo formulário "PiscineiroPro"
+4. Copie o endpoint: https://formspree.io/f/XXXX
+5. Crie arquivo .env.local na raiz:
+   VITE_FORMSPREE_ID=XXXX
+6. Use no componente Formulario.jsx:
+   const endpoint = `https://formspree.io/f/${import.meta.env.VITE_FORMSPREE_ID}`;
+
+### Para configurar Google Analytics:
+1. Acesse https://analytics.google.com
+2. Crie propriedade "PiscineiroPro"
+3. Copie Measurement ID: G-XXXX
+4. No index.html, substitua GA_MEASUREMENT_ID
+5. Teste: abra DevTools, vá pra Network, procure por gtag
+
+## FOOTER:
+- Imagem piscina limpa (usar placeholder: https://via.placeholder.com/1200x400?text=Piscina+Limpa)
+- Copyright "PiscineiroPro 2025"
+- Link discreto: "Política de Privacidade" (pode ser página fake por enquanto)
+
+## CONFIGURAÇÕES TÉCNICAS:
+
+package.json scripts:
+```
+"predeploy": "npm run build",
+"deploy": "gh-pages -d dist",
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "deploy": "npm run build && gh-pages -d dist"
+}
+```
+
+vite.config.js (SIMPLES - sem base path):
+```
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+})
+```
+
+Tailwind config (tailwind.config.js):
+```
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,jsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        piscina: {
+          600: '#1E40AF',
+          500: '#3B82F6',
+        },
+        limpa: '#10B981',
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+## FUNCIONALIDADES OBRIGATÓRIAS:
+✅ 100% responsivo (mobile → desktop)
+✅ Carregamento <2s
+✅ Formulário funcional com validação (React Hook Form)
+✅ Confirmação pós-submit com UX clara
+✅ Integração Formspree (emails automáticos)
+✅ Google Analytics 4 rastreando eventos
+✅ SEO básico (title, meta description, og:image)
+✅ Cores customizadas (azul piscina + verde limpo)
+✅ Animations sutis (fade-in no scroll)
+✅ Sem dark mode (manter light mode apenas)
+✅ Código comentado em PT-BR
+✅ .env.local para variáveis sensíveis
+✅ README.md completo com passo a passo
+
+## INSTRUÇÕES DE USO NO TERMINAL:
+
+# Instalar dependências
+npm install
+
+# Instalar React Hook Form
+npm install react-hook-form
+
+# Instalar gh-pages para deploy
+npm install --save-dev gh-pages
+
+# Testar localmente
+npm run dev
+
+# Buildar para produção
+npm run build
+
+# Fazer deploy no GitHub Pages
+npm run deploy
+
+## PASSOS PRÉ-REQUISITO:
+1. Ter repo criado no GitHub: "piscineiro-landing"
+2. Ter conta Formspree criada e endpoint pronto
+3. Ter conta Google Analytics criada (opcional mas recomendado)
+
+CRIE TODOS OS ARQUIVOS AGORA com código limpo, comentado em PT-BR, 100% funcional e pronto para `npm run deploy`. 
+
+Priorize:
+- Formulário robusto com validação clara
+- Confirmação de sucesso visualmente satisfatória
+- Integração Formspree funcionando
+- Responsividade perfeita em mobile
+- Analytics eventos bem configurados
+
+Iniciar agora!
