@@ -1,11 +1,12 @@
 // src/components/Formulario.jsx
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
+import InputMask from 'react-input-mask';
 import { trackEvent } from '../utils/analytics';
 import Confirmacao from './Confirmacao';
 
 const Formulario = () => {
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, watch } = useForm();
+  const { register, control, handleSubmit, formState: { errors, isSubmitting }, reset, watch } = useForm();
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
@@ -15,13 +16,19 @@ const Formulario = () => {
   const onSubmit = async (data) => {
     setSubmitError(null);
     try {
+      const whatsappDigits = (data.whatsapp || '').replace(/\D/g, '');
+      const payload = {
+        ...data,
+        whatsapp: whatsappDigits,
+        whatsappFormatado: data.whatsapp || '',
+      };
       const response = await fetch(formspreeEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -242,17 +249,33 @@ const Formulario = () => {
               </div>
               <div>
                 <label htmlFor="whatsapp" className="block text-gray-700 mb-1">WhatsApp</label>
-                <input
-                  id="whatsapp"
-                  type="tel"
-                  {...register('whatsapp', {
+                <Controller
+                  name="whatsapp"
+                  control={control}
+                  rules={{
                     pattern: {
                       value: /^\(\d{2}\) \d{5}-\d{4}$/,
                       message: 'Formato inválido. Use (XX) XXXXX-XXXX'
                     }
-                  })}
-                  placeholder="(XX) XXXXX-XXXX"
-                  className="w-full p-2 border rounded"
+                  }}
+                  render={({ field }) => (
+                    <InputMask
+                      mask="(99) 99999-9999"
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                    >
+                      {(inputProps) => (
+                        <input
+                          {...inputProps}
+                          id="whatsapp"
+                          type="tel"
+                          placeholder="(XX) XXXXX-XXXX"
+                          className="w-full p-2 border rounded"
+                        />
+                      )}
+                    </InputMask>
+                  )}
                 />
                 {errors.whatsapp && <p className="text-red-500 text-sm mt-1">{errors.whatsapp.message}</p>}
               </div>
